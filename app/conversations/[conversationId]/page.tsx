@@ -23,13 +23,11 @@ export default async function page({ params }: Params) {
     </div>
   )
 
-
-
   return (
     <section className="lg:pl-80 h-full">
       <div className="h-full flex flex-col">
         <Header conversation={conversation} />
-        <Body />
+        <Body initialMessage={messages} />
         <MessageForm />
       </div>
     </section>
