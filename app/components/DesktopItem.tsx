@@ -22,7 +22,7 @@ export default function DesktopItem({
 }: Props) {
   const handleClick = () => {
     if (onClick) {
-        return onClick;
+        return onClick();
     }
   };
 

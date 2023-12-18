@@ -6,6 +6,8 @@ import clsx from "clsx";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useState } from "react";
+import ImageModal from "./ImageModal";
 
 type Props = {
   message: FullMessageType;
@@ -14,6 +16,7 @@ type Props = {
 
 export default function MessageBox({ message, isLast }: Props) {
   const session = useSession();
+  const [imageModalOpen, setImageModalOpen] = useState(false);
 
   const isOwn = session?.data?.user?.email === message?.sender?.email;
 
@@ -54,8 +57,14 @@ export default function MessageBox({ message, isLast }: Props) {
         </div>
         {/* @ts-ignore */}
         <div className={message}>
+          <ImageModal
+            src={message.image}
+            isOpen={imageModalOpen}
+            onClose={() => setImageModalOpen(false)}
+          />
           {message?.image ? (
             <Image
+              onClick={() => setImageModalOpen(true)}
               alt="Message Image"
               height={288}
               width={288}

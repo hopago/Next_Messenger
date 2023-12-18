@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import useOtherMemberInfo from "@/app/hooks/useFilteredConversationMembers";
 import Avatar from "@/app/components/users/Avatar";
+import AvatarGroup from "@/app/components/AvatarGroup";
 
 type Props = {
   conversation: FullConversationType;
@@ -84,7 +85,11 @@ export default function ConversationBox({ conversation, selected }: Props) {
         selected ? "bg-neutral-100" : "bg-white"
       )}
     >
-      <Avatar user={anotherUser} />
+      {conversation?.isGroup ? (
+        <AvatarGroup users={conversation.users} />
+      ) : (
+        <Avatar user={anotherUser} />
+      )}
       <div className="min-w-0 flex-1">
         <div className="focus:outline-none">
           <div className="flex justify-between mb-1">
@@ -92,14 +97,16 @@ export default function ConversationBox({ conversation, selected }: Props) {
               {conversation.name || anotherUser.name}
             </p>
             {lastMessage?.createdAt && (
-              <p
-                className="text-xs text-gray-400 font-light"
-              >{format(new Date(lastMessage.createdAt), "p")}
+              <p className="text-xs text-gray-400 font-light">
+                {format(new Date(lastMessage.createdAt), "p")}
               </p>
             )}
           </div>
           <p
-            className={clsx(`truncate text-sm`, hasSeen ? "text-gray-500" : "text-black font-medium")}
+            className={clsx(
+              `truncate text-sm`,
+              hasSeen ? "text-gray-500" : "text-black font-medium"
+            )}
           >
             {lastMessageText}
           </p>

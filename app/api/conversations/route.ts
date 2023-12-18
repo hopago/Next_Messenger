@@ -1,6 +1,7 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
 import prisma from "@/app/lib/prismadb";
+import { pusherServer } from "@/app/lib/pusher";
 
 export async function POST(req: Request) {
   try {
@@ -10,10 +11,6 @@ export async function POST(req: Request) {
 
     if (!currentUser?.email || !currentUser?.id)
       return new NextResponse("Unauthorized.", { status: 401 });
-
-    if (!userId) {
-      return new NextResponse("Invalid Credentials...", { status: 400 });
-    }
 
     if (isGroup && (!members || members.length < 2 || !name)) {
       return new NextResponse("Invalid credentials...", { status: 400 });
@@ -81,6 +78,12 @@ export async function POST(req: Request) {
         include: {
             users: true
         }
+    });
+
+    newConversation.users.forEach((user) => {
+      if (user.email) {
+        pusherServer.trigger(user.email, 'conversation:new', newConversation);
+      }
     });
 
     return NextResponse.json(newConversation);
