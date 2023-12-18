@@ -37,6 +37,12 @@ export async function POST(req: Request) {
         },
       });
 
+      newConversation.users.forEach((user) => {
+        if (user.email) {
+          pusherServer.trigger(user.email, "conversation:new", newConversation);
+        }
+      });
+
       return NextResponse.json(newConversation);
     }
 
@@ -80,7 +86,7 @@ export async function POST(req: Request) {
         }
     });
 
-    newConversation.users.forEach((user) => {
+    newConversation.users.map((user) => {
       if (user.email) {
         pusherServer.trigger(user.email, 'conversation:new', newConversation);
       }

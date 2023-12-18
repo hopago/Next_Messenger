@@ -9,6 +9,7 @@ import React, { Fragment, useMemo, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
 import ConfirmModal from "./ConfirmModal";
 import AvatarGroup from "@/app/components/AvatarGroup";
+import useActiveList from "@/app/hooks/useActiveList";
 
 type Props = {
   conversation: Conversation & {
@@ -27,6 +28,9 @@ export default function ProfilePopout({
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  const { members } = useActiveList();
+  const isActive = members.indexOf(anotherUser?.email!) !== - 1;
+
   const joinedDate = useMemo(() => {
     return format(new Date(anotherUser.createdAt), "PP");
   }, [anotherUser.createdAt]);
@@ -40,7 +44,7 @@ export default function ProfilePopout({
       return `${conversation.users.length} members`;
     }
 
-    return "Active";
+    return isActive ? "Active" : "Offline";
   }, [conversation]);
 
   return (
